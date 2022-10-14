@@ -8,6 +8,7 @@ import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import { viteMockServe } from 'vite-plugin-mock'
 
 export default defineConfig({
   resolve: {
@@ -19,7 +20,18 @@ export default defineConfig({
     Vue({
       reactivityTransform: true,
     }),
-
+    viteMockServe({
+      mockPath: './mock', // mock文件路径
+      supportTs: true, // 是否支持typeScript
+      // localEnabled: localEnabled, // 开发打包开关
+      // prodEnabled: prodEnabled, // 生产打包开关
+      watchFiles: true, // 监视文件更改
+      injectCode: `
+        import { setupProdMockServer } from './mockProdServer';
+        setupProdMockServer();
+      `,
+      logger: true, // 是否在控制台显示请求日志
+    }),
     // https://github.com/hannoeru/vite-plugin-pages
     Pages(),
 
@@ -35,8 +47,8 @@ export default defineConfig({
             'useDialog',
             'useMessage',
             'useNotification',
-            'useLoadingBar'
-          ]
+            'useLoadingBar',
+          ],
         },
       ],
       dts: true,
@@ -49,7 +61,7 @@ export default defineConfig({
     // https://github.com/antfu/vite-plugin-components
     Components({
       dts: true,
-      resolvers: [NaiveUiResolver()]
+      resolvers: [NaiveUiResolver()],
     }),
 
     // https://github.com/antfu/unocss

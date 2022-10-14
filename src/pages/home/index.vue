@@ -1,12 +1,12 @@
-<template>
-    <div>
-home/index
-    </div>
-</template>
-
 <script setup lang="ts">
 
 </script>
+
+<template>
+  <div>
+    home/index
+  </div>
+</template>
 
 <style scoped>
 
