@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import type { MenuOption } from 'naive-ui'
 import { NIcon } from 'naive-ui'
 
@@ -20,10 +20,12 @@ function renderMenuIcon(option: MenuOption) {
   // 返回 falsy 值，不再渲染图标及占位符
   if (option.key === 'food')
     return null
-  return h(NIcon, null, { default: () => h('div', { style: { color: 'red' } }) })
+  return <n-icon size="20">
+    <i class="i-pixelarticons-android inline-block" />
+    </n-icon>
 }
 function expandIcon() {
-  return h(NIcon, null, { default: () => h('div') })
+  return <i class="i-pixelarticons-chevron-down inline-block" />
 }
 const menuOptions: MenuOption[] = [
   {
@@ -102,7 +104,7 @@ const menuOptions: MenuOption[] = [
       <n-layout-header>颐和园路</n-layout-header>
       <n-layout has-sider>
         <n-layout-sider
-          content-style="padding: 24px;" bordered collapse-mode="width" :collapsed-width="64" :width="240"
+ bordered collapse-mode="width" :collapsed-width="60" :width="240"
           :collapsed="collapsed" show-trigger @collapse="collapsed = true" @expand="collapsed = false"
         >
           <n-menu

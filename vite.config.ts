@@ -9,6 +9,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Unocss from 'unocss/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import { viteMockServe } from 'vite-plugin-mock'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
   resolve: {
@@ -34,7 +35,9 @@ export default defineConfig({
     }),
     // https://github.com/hannoeru/vite-plugin-pages
     Pages(),
-
+    vueJsx({
+      // options are passed on to @vue/babel-plugin-jsx
+    }),
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
       imports: [
