@@ -6,6 +6,7 @@ let hitokoto = $ref('永远不要高估一个后端程序员的审美  -- logs40
 
 const formRef = ref<FormInst | null>(null)
 const message = useMessage()
+const router = useRouter()
 
 onBeforeMount(() => {
   console.log(2333)
@@ -42,6 +43,7 @@ function handleValidateClick() {
     if (!errors) {
       message.success('Valid')
       localStorage.setItem('Ltoken', 'asdasdasd')
+      router.push('/home')
     }
     else {
       console.log(errors)

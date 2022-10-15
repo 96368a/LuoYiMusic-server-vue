@@ -1,7 +1,7 @@
 <script setup lang="tsx">
 import type { MenuOption } from 'naive-ui'
 
-const collapsed = $ref(true)
+const collapsed = $ref(false)
 function renderMenuLabel(option: MenuOption) {
   if ('href' in option) {
     return h(
@@ -28,25 +28,14 @@ function expandIcon() {
 }
 const menuOptions: MenuOption[] = [
   {
-    label: '且听风吟',
-    key: 'hear-the-wind-sing',
-    href: 'https://baike.baidu.com/item/%E4%B8%94%E5%90%AC%E9%A3%8E%E5%90%9F/3199',
-  },
-  {
-    label: '1973年的弹珠玩具',
-    key: 'pinball-1973',
-    disabled: true,
+    label: '用户管理',
+    key: 'user-manager',
     children: [
       {
-        label: '鼠',
-        key: 'rat',
+        label: '用户列表',
+        key: 'user-list',
       },
     ],
-  },
-  {
-    label: '寻羊冒险记',
-    key: 'a-wild-sheep-chase',
-    disabled: true,
   },
   {
     label: '舞，舞，舞',
@@ -98,27 +87,46 @@ const menuOptions: MenuOption[] = [
 </script>
 
 <template>
-  <div>
+  <n-layout has-sider h-full>
+    <n-layout-sider
+      bordered collapse-mode="width" :collapsed-width="60" :width="240" :collapsed="collapsed"
+      show-trigger @collapse="collapsed = true"
+      @expand="collapsed = false"
+    >
+      <div py-8 flex justify-center items-center>
+        <i i-pixelarticons-android inline-block text-4xl />
+        <span v-if="!collapsed">Logo</span>
+      </div>
+      <n-menu
+        :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
+        :render-label="renderMenuLabel" :render-icon="renderMenuIcon" :expand-icon="expandIcon"
+      />
+    </n-layout-sider>
     <n-layout>
-      <n-layout-header>颐和园路</n-layout-header>
-      <n-layout has-sider>
-        <n-layout-sider
-          bordered collapse-mode="width" :collapsed-width="60" :width="240" :collapsed="collapsed"
-          show-trigger @collapse="collapsed = true" @expand="collapsed = false"
-        >
-          <n-menu
-            :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
-            :render-label="renderMenuLabel" :render-icon="renderMenuIcon" :expand-icon="expandIcon"
-          />
-          <div>2333</div>
-        </n-layout-sider>
-        <n-layout-content content-style="padding: 24px;">
-          <router-view />
-        </n-layout-content>
-      </n-layout>
-      <n-layout-footer>成府路</n-layout-footer>
+      <n-layout-header flex gap-8 p="x-4 y-2">
+        <n-icon size="20" class="cursor-pointer" @click="collapsed = !collapsed">
+          <i inline-block :i-pixelarticons-float="collapsed ? 'left' : 'right'" />
+        </n-icon>
+        <n-breadcrumb>
+          <n-breadcrumb-item>
+            <n-icon size="14">
+              <i inline-block i-pixelarticons-card-text />
+            </n-icon>
+          </n-breadcrumb-item>
+          <n-breadcrumb-item>
+            <n-icon size="14">
+              <i inline-block i-pixelarticons-card-text />
+            </n-icon>
+            index
+          </n-breadcrumb-item>
+        </n-breadcrumb>
+      </n-layout-header>
+      <n-layout-content content-style="padding: 24px;">
+        <router-view />
+      </n-layout-content>
+      <n-layout-footer>Designed by Logs404</n-layout-footer>
     </n-layout>
-  </div>
+  </n-layout>
 </template>
 
 <style scoped>
