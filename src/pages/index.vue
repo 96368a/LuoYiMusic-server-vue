@@ -13,7 +13,7 @@ onBeforeMount(() => {
     // console.log(res);
     hitokoto = `${res.data.hitokoto}  -- ${res.data.from}`
   })
-  axios.get('/api/getStatusList')
+  axios.get('/api/user')
 })
 
 const formValue = $ref({
@@ -41,6 +41,7 @@ function handleValidateClick() {
   formRef.value?.validate((errors) => {
     if (!errors) {
       message.success('Valid')
+      localStorage.setItem('Ltoken', 'asdasdasd')
     }
     else {
       console.log(errors)
