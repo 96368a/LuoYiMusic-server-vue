@@ -96,7 +96,10 @@ function handleLogin() {
             <n-input v-model:value="formValue.user.name" placeholder="输入用户名" />
           </n-form-item>
           <n-form-item label="" path="user.password">
-            <n-input v-model:value="formValue.user.password" type="password" placeholder="输入密码" @keyup.enter="handleLogin" />
+            <n-input
+              v-model:value="formValue.user.password" type="password" placeholder="输入密码"
+              @keyup.enter="handleLogin"
+            />
           </n-form-item>
         </n-form>
       </div>

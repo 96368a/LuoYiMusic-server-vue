@@ -1,6 +1,5 @@
 <script setup lang="tsx">
 import type { MenuOption } from 'naive-ui'
-import { NIcon } from 'naive-ui'
 
 const collapsed = $ref(true)
 function renderMenuLabel(option: MenuOption) {
@@ -22,7 +21,7 @@ function renderMenuIcon(option: MenuOption) {
     return null
   return <n-icon size="20">
     <i class="i-pixelarticons-android inline-block" />
-    </n-icon>
+  </n-icon>
 }
 function expandIcon() {
   return <i class="i-pixelarticons-chevron-down inline-block" />
@@ -104,8 +103,8 @@ const menuOptions: MenuOption[] = [
       <n-layout-header>颐和园路</n-layout-header>
       <n-layout has-sider>
         <n-layout-sider
- bordered collapse-mode="width" :collapsed-width="60" :width="240"
-          :collapsed="collapsed" show-trigger @collapse="collapsed = true" @expand="collapsed = false"
+          bordered collapse-mode="width" :collapsed-width="60" :width="240" :collapsed="collapsed"
+          show-trigger @collapse="collapsed = true" @expand="collapsed = false"
         >
           <n-menu
             :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
