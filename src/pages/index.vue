@@ -60,11 +60,13 @@ function handleLogin() {
         password: formValue.user.password,
       }).then((res) => {
         const { data } = res
-        if (data.code === 200)
+        if (data.code === 200) {
           message.success(data.msg)
+          localStorage.setItem('Ltoken', data.data.token)
+          router.push('/home')
+        }
 
-        else
-          message.error(data.msg)
+        else { message.error(data.msg) }
 
         // console.log(res.data);
       })
@@ -107,7 +109,7 @@ function handleLogin() {
       </div>
 
       <div flex justify-between px-12>
-        <n-button type="tertiary" @click="handleValidateClick">
+        <n-button type="primary" @click="handleLogin">
           Go
         </n-button>
         <n-button strong secondary type="tertiary">

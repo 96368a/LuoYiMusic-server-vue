@@ -1,8 +1,21 @@
 <script setup lang="tsx">
 import type { MenuOption } from 'naive-ui'
 
-const route = useRoute()
-console.log(route.path.split('/'))
+// const route = useRoute()
+// console.log(route.path.split('/'))
+
+const breadcrumb = reactive({
+  title: 'Title',
+  option: [{
+    label: 'David Tao',
+    key: 1,
+  },
+  {
+    label: '黑色柳丁',
+    key: 2,
+  }],
+})
+let breadcrumbChild = $ref(() => <span>2333</span>)
 
 const collapsed = $ref(false)
 function renderMenuIcon(option: MenuOption) {
@@ -50,8 +63,18 @@ const menuOptions: MenuOption[] = [
   },
 ]
 function handleUpdateValue(key: string, item: MenuOption) {
-  console.log(key)
-  console.log(item)
+  // 查找当前menu
+  const currentMenu = menuOptions.find((o) => {
+    const child = o?.children?.find((o1) => {
+      return o1.key === key
+    })
+    return child
+  })
+
+  breadcrumb.title = currentMenu?.label as string
+  breadcrumb.option = currentMenu?.children as []
+
+  breadcrumbChild = item.label as (() => JSX.Element)
 }
 </script>
 
@@ -71,29 +94,36 @@ function handleUpdateValue(key: string, item: MenuOption) {
         :render-icon="renderMenuIcon" :expand-icon="expandIcon" @update:value="handleUpdateValue"
       />
     </n-layout-sider>
-    <n-layout>
-      <n-layout-header flex gap-8 p="x-4 y-2">
+    <n-layout :native-scrollbar="false">
+      <n-layout-header flex gap-8 p="x-4 y-2" position="absolute" border-b-1 border-gray-200 z-10>
         <n-icon size="20" class="cursor-pointer" @click="collapsed = !collapsed">
           <i inline-block :i-pixelarticons-float="collapsed ? 'left' : 'right'" />
         </n-icon>
         <n-breadcrumb>
           <n-breadcrumb-item>
-            <n-icon size="14">
-              <i inline-block i-pixelarticons-card-text />
-            </n-icon>
+            <n-dropdown :options="breadcrumb.option" @select="handleUpdateValue">
+              <div class="trigger">
+                <n-icon size="14">
+                  <i inline-block i-pixelarticons-card-text />
+                </n-icon>
+                <span pl-2>{{ breadcrumb.title }}</span>
+              </div>
+            </n-dropdown>
           </n-breadcrumb-item>
           <n-breadcrumb-item>
             <n-icon size="14">
               <i inline-block i-pixelarticons-card-text />
             </n-icon>
-            index
+            <span pl-2><breadcrumbChild /></span>
           </n-breadcrumb-item>
         </n-breadcrumb>
       </n-layout-header>
-      <n-layout-content content-style="padding: 24px;">
+      <n-layout-content content-style="padding: 24px;padding-top: 48px;">
         <router-view />
       </n-layout-content>
-      <n-layout-footer>Designed by Logs404</n-layout-footer>
+      <n-layout-footer position="absolute">
+        Designed by Logs404
+      </n-layout-footer>
     </n-layout>
   </n-layout>
 </template>

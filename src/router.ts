@@ -8,7 +8,6 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   if (to.path.startsWith('/home')) {
-    console.log('进入主页')
     if (!localStorage.getItem('Ltoken')) {
       // useMessage().error("用户未登录")
       return ''
