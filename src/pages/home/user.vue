@@ -1,17 +1,19 @@
 <script setup lang="tsx">
 import axios from '~/api'
 import EditUser from '~/components/user/EditUser.vue'
+import type { UserInfo } from '~/types'
 let data: User[] = $ref([
   { id: 1, username: 'test1', nickname: 'test111' },
 ])
+let user = $ref({} as UserInfo)
 interface User {
   id: number
   username: string
   nickname: string
 }
-const mode = $ref('add')
+let mode = $ref('add')
 let isloading = $ref(false)
-const showModal = $ref(false)
+let showModal = $ref(false)
 const searchFormValue = reactive({
   name: '',
 })
@@ -26,6 +28,18 @@ const pagination = reactive({
     return `Total is ${itemCount}.`
   },
 })
+const handleAddUser = () => {
+  mode = 'add'
+  showModal = true
+}
+const handleEditUser = (data) => {
+  mode = 'edit'
+  console.log(data);
+  
+  user = data
+  showModal = true
+  
+}
 const rowKey = (row: User) => row.id
 const getUsers = () => {
   isloading = true
@@ -36,7 +50,6 @@ const getUsers = () => {
   })
   isloading = false
 }
-
 const handleReset = () => {
   searchFormValue.name = ''
 }
@@ -66,12 +79,19 @@ const options = [
     key: 'del',
   },
   {
+    label: '设为管理员',
+    key: 'setadmin',
+  },
+  {
     label: '更改密码',
     key: 'changpw',
   },
 ]
-const handleSelect = (key: string | number) => {
+const handleSelect = (key: string | number, row: any) => {
   console.log(key)
+  if (key === 'edit')
+    handleEditUser(row)
+
 }
 const columns = [
   {
@@ -91,10 +111,17 @@ const columns = [
     key: 'nickname',
   },
   {
+    title: '是否管理员',
+    key: 'is_admin',
+    render(row: UserInfo) {
+      return <span>{row.is_admin ? '是' : '否'}</span>
+    },
+  },
+  {
     title: 'Action',
     key: 'action',
-    render(row: string | number) {
-      return <n-dropdown trigger="hover" options={options} onSelect={() => handleSelect(row)} placement="bottom-start"><n-button>操作</n-button></n-dropdown>
+    render(row: any) {
+      return <n-dropdown trigger="hover" options={options} onSelect={(key: string) => handleSelect(key, row)} placement="bottom-start"><n-button>操作</n-button></n-dropdown>
     },
   },
 ]
@@ -123,7 +150,7 @@ onMounted(() => {
             <n-button type="warning" attr-type="reset" @click="handleReset">
               重置
             </n-button>
-            <n-button attr-type="reset" @click="showModal = true">
+            <n-button attr-type="reset" @click="handleAddUser">
               添加
             </n-button>
           </n-space>
@@ -139,7 +166,7 @@ onMounted(() => {
       />
     </n-layout>
   </n-layout>
-  <EditUser v-model:show="showModal" :mode="mode" :user="{}" />
+  <EditUser v-model:show="showModal" :mode="mode" :user="user" />
 </template>
 
 <style scoped>

@@ -4,4 +4,5 @@ export interface UserInfo {
   username: string
   password: string
   signature: string
+  is_admin: boolean
 }

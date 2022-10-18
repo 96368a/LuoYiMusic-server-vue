@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // const showModal = $ref(false)
-import { da } from 'date-fns/locale'
 import type { FormInst, FormItemRule } from 'naive-ui'
 import { addUser } from '~/api'
 import type { UserInfo } from '~/types'
@@ -12,6 +11,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:show'])
 const userValue = toReactive(props.user as UserInfo)
+const { user } = toRefs(props)
 const formRef = ref<FormInst | null>(null)
 const isEdit = computed(() => props.mode === 'edit')
 // const userValue = reactive({
@@ -50,7 +50,7 @@ const handelClose = () => {
 const handelClick = () => {
   if (isEdit.value) {
     // 编辑用户
-    console.log(userValue)
+    console.log(user)
   }
   else {
     // 添加用户
@@ -87,18 +87,18 @@ const handelReset = () => {
     :show="props.show" class="custom-card" preset="card" :title="isEdit ? '编辑用户' : '添加用户'" :style="{ width: '600px' }" size="huge"
     :bordered="false" @close="handelClose"
   >
-    <n-form ref="formRef" :label-width="80" :model="userValue" label-placement="left" :rules="rules">
+    <n-form ref="formRef" :label-width="80" :model="user" label-placement="left" :rules="rules">
       <n-form-item v-if="isEdit" label="ID" path="id">
-        <n-input-number v-model:value="userValue.id" placeholder="输入姓名" disabled :show-button="false" />
+        <n-input-number v-model:value="user.id" placeholder="输入姓名" disabled :show-button="false" />
       </n-form-item>
       <n-form-item label="昵称" path="nickname">
-        <n-input v-model:value="userValue.nickname" placeholder="输入昵称" />
+        <n-input v-model:value="user.nickname" placeholder="输入昵称" />
       </n-form-item>
       <n-form-item label="用户名" path="username">
-        <n-input v-model:value="userValue.username" placeholder="输入用户名" />
+        <n-input v-model:value="user.username" placeholder="输入用户名" />
       </n-form-item>
       <n-form-item v-if="!isEdit" label="密码" path="password">
-        <n-input v-model:value="userValue.password" placeholder="输入密码" />
+        <n-input v-model:value="user.password" placeholder="输入密码" />
       </n-form-item>
     </n-form>
     <template #footer>
