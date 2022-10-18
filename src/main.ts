@@ -11,7 +11,7 @@ const meta = document.createElement('meta')
 meta.name = 'naive-ui-style'
 document.head.appendChild(meta)
 
-console.log(import.meta.env)
+// console.log(import.meta.env)
 
 const app = createApp(App)
 app.use(router)

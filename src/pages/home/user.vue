@@ -1,5 +1,6 @@
 <script setup lang="tsx">
 import axios from '~/api'
+import EditUser from '~/components/user/EditUser.vue'
 let data: User[] = $ref([
   { id: 1, username: 'test1', nickname: 'test111' },
 ])
@@ -8,7 +9,9 @@ interface User {
   username: string
   nickname: string
 }
+const mode = $ref('add')
 let isloading = $ref(false)
+const showModal = $ref(false)
 const searchFormValue = reactive({
   name: '',
 })
@@ -120,6 +123,9 @@ onMounted(() => {
             <n-button type="warning" attr-type="reset" @click="handleReset">
               重置
             </n-button>
+            <n-button attr-type="reset" @click="showModal = true">
+              添加
+            </n-button>
           </n-space>
         </n-form-item>
       </n-form>
@@ -133,6 +139,7 @@ onMounted(() => {
       />
     </n-layout>
   </n-layout>
+  <EditUser v-model:show="showModal" :mode="mode" :user="{}" />
 </template>
 
 <style scoped>

@@ -1,6 +1,7 @@
-interface UserInfo {
+export interface UserInfo {
   id: number
-  username: string
   nickname: string
+  username: string
+  password: string
   signature: string
 }

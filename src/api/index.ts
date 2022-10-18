@@ -7,7 +7,7 @@ axios.interceptors.request.use((config) => {
   // 检查是否存在token
   const token = localStorage.getItem('Ltoken')
   if (token)
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers!.Authorization = `Bearer ${token}`
 
   return config
 }, (error) => {
