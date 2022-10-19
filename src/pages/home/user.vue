@@ -1,5 +1,7 @@
 <script setup lang="tsx">
-import { getUsers as apigetUsers, delUser } from '~/api'
+import type { DropdownOption, MenuOption } from 'naive-ui'
+import type { VNodeChild } from 'vue'
+import { getUsers as apigetUsers, delUser, removeAdmin, setAdmin } from '~/api'
 import EditUser from '~/components/user/EditUser.vue'
 import type { UserInfo } from '~/types'
 let data: UserInfo[] = $ref([
@@ -49,7 +51,7 @@ const handleEditUser = (data: UserInfo) => {
 const handleDelUser = (data: UserInfo) => {
   dialog.warning({
     title: '警告',
-    content: '你确定删除？',
+    content: `你确定删除${data.username}吗？`,
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
@@ -70,6 +72,27 @@ const handleChangePW = (data: UserInfo) => {
   showModal = true
   console.log(data)
 }
+const handleSetAdmin = (data: UserInfo) => {
+  console.log(data)
+  if (data.is_admin) {
+    removeAdmin(data).then((res) => {
+      if (res.data.code === 200) {
+        message.success('设置成功')
+        getUsers()
+      }
+      else { message.error(res.data.msg) }
+    })
+  }
+  else {
+    setAdmin(data).then((res) => {
+      if (res.data.code === 200) {
+        message.success('设置成功')
+        getUsers()
+      }
+      else { message.error(res.data.msg) }
+    })
+  }
+}
 const handleReset = () => {
   searchFormValue.name = ''
 }
@@ -87,7 +110,13 @@ const handlePageChange = (currentPage: number) => {
 function handleSorterChange(sorter: any) {
   console.log(sorter)
 }
-
+const renderDropdownLabel = (option: DropdownOption, data: UserInfo) => {
+  if (option.key === 'setadmin') {
+    if (data.is_admin)
+      option.label = '移除管理员'
+  }
+  return option.label as VNodeChild
+}
 const options = [
   {
     label: '编辑',
@@ -115,6 +144,8 @@ const handleSelect = (key: string | number, row: UserInfo) => {
     handleDelUser(row)
   else if (key === 'changpw')
     handleChangePW(row)
+  else if (key === 'setadmin')
+    handleSetAdmin(row)
 }
 
 const columns = [
@@ -147,6 +178,7 @@ const columns = [
     render(row: any) {
       return (<n-dropdown trigger="hover"
       options={options} onSelect={(key: string) => handleSelect(key, row)}
+      render-label={(option: MenuOption) => renderDropdownLabel(option, row)}
       placement="bottom-start">
       <n-button>操作</n-button></n-dropdown>)
     },

@@ -24,3 +24,9 @@ export const changPwUser = async (user: UserInfo) => {
 export const delUser = async (user: UserInfo) => {
   return axios.post('/api/user/del', { id: user.id })
 }
+export const setAdmin = async (user: UserInfo) => {
+  return axios.post('/api/user/setAdmin', { id: user.id })
+}
+export const removeAdmin = async (user: UserInfo) => {
+  return axios.post('/api/user/removeAdmin', { id: user.id })
+}
