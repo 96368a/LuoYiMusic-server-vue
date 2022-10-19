@@ -1,17 +1,23 @@
 <script setup lang="tsx">
 import type { MenuOption } from 'naive-ui'
 
+// const route = useRoute()
+// console.log(route.path.split('/'))
+
+const breadcrumb = reactive({
+  title: 'Title',
+  option: [{
+    label: 'David Tao',
+    key: 1,
+  },
+  {
+    label: '黑色柳丁',
+    key: 2,
+  }],
+})
+let breadcrumbChild = $ref(() => <span>2333</span>)
+
 const collapsed = $ref(false)
-function renderMenuLabel(option: MenuOption) {
-  if ('href' in option) {
-    return h(
-      'a',
-      { href: option.href, target: '_blank' },
-      option.label as string,
-    )
-  }
-  return option.label as string
-}
 function renderMenuIcon(option: MenuOption) {
   // 渲染图标占位符以保持缩进
   if (option.key === 'sheep-man')
@@ -32,58 +38,44 @@ const menuOptions: MenuOption[] = [
     key: 'user-manager',
     children: [
       {
-        label: '用户列表',
+        label: () => <router-link to="/home/user">用户列表</router-link>,
         key: 'user-list',
       },
     ],
   },
   {
-    label: '舞，舞，舞',
+    label: '曲库相关',
     key: 'dance-dance-dance',
     children: [
       {
-        type: 'group',
-        label: '人物',
-        key: 'people',
-        children: [
-          {
-            label: '叙事者',
-            key: 'narrator',
-          },
-          {
-            label: '羊男',
-            key: 'sheep-man',
-          },
-        ],
+        label: () => <router-link to="/home/song">歌曲列表</router-link>,
+        key: 'song-list',
       },
       {
-        label: '饮品',
-        key: 'beverage',
-        children: [
-          {
-            label: '威士忌',
-            key: 'whisky',
-            href: 'https://baike.baidu.com/item/%E5%A8%81%E5%A3%AB%E5%BF%8C%E9%85%92/2959816?fromtitle=%E5%A8%81%E5%A3%AB%E5%BF%8C&fromid=573&fr=aladdin',
-          },
-        ],
+        label: () => <router-link to="/home/songlist">歌单列表</router-link>,
+        key: 'songlist-list',
       },
       {
-        label: '食物',
-        key: 'food',
-        children: [
-          {
-            label: '三明治',
-            key: 'sandwich',
-          },
-        ],
-      },
-      {
-        label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes',
+        label: '歌手列表',
+        key: 'arist-list',
       },
     ],
   },
 ]
+function handleUpdateValue(key: string, item: MenuOption) {
+  // 查找当前menu
+  const currentMenu = menuOptions.find((o) => {
+    const child = o?.children?.find((o1) => {
+      return o1.key === key
+    })
+    return child
+  })
+
+  breadcrumb.title = currentMenu?.label as string
+  breadcrumb.option = currentMenu?.children as []
+
+  breadcrumbChild = item.label as (() => JSX.Element)
+}
 </script>
 
 <template>
@@ -99,32 +91,39 @@ const menuOptions: MenuOption[] = [
       </div>
       <n-menu
         :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
-        :render-label="renderMenuLabel" :render-icon="renderMenuIcon" :expand-icon="expandIcon"
+        :render-icon="renderMenuIcon" :expand-icon="expandIcon" @update:value="handleUpdateValue"
       />
     </n-layout-sider>
-    <n-layout>
-      <n-layout-header flex gap-8 p="x-4 y-2">
+    <n-layout :native-scrollbar="false">
+      <n-layout-header flex gap-8 p="x-4 y-2" position="absolute" border-b-1 border-gray-200 z-10>
         <n-icon size="20" class="cursor-pointer" @click="collapsed = !collapsed">
           <i inline-block :i-pixelarticons-float="collapsed ? 'left' : 'right'" />
         </n-icon>
         <n-breadcrumb>
           <n-breadcrumb-item>
-            <n-icon size="14">
-              <i inline-block i-pixelarticons-card-text />
-            </n-icon>
+            <n-dropdown :options="breadcrumb.option" @select="handleUpdateValue">
+              <div class="trigger">
+                <n-icon size="14">
+                  <i inline-block i-pixelarticons-card-text />
+                </n-icon>
+                <span pl-2>{{ breadcrumb.title }}</span>
+              </div>
+            </n-dropdown>
           </n-breadcrumb-item>
           <n-breadcrumb-item>
             <n-icon size="14">
               <i inline-block i-pixelarticons-card-text />
             </n-icon>
-            index
+            <span pl-2><breadcrumbChild /></span>
           </n-breadcrumb-item>
         </n-breadcrumb>
       </n-layout-header>
-      <n-layout-content content-style="padding: 24px;">
+      <n-layout-content content-style="padding: 24px;padding-top: 48px;">
         <router-view />
       </n-layout-content>
-      <n-layout-footer>Designed by Logs404</n-layout-footer>
+      <n-layout-footer position="absolute">
+        Designed by Logs404
+      </n-layout-footer>
     </n-layout>
   </n-layout>
 </template>

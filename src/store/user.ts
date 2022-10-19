@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
+import api from '~/api'
 
 export const useUserStore = defineStore('user', {
   state() {
     return {
-      userInfo: {},
+      userInfo: {} as UserInfo,
     }
   },
   getters: {
@@ -12,6 +13,9 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-
+    async getUserInfo() {
+      const data = await api.get('/user/info')
+      console.log(data)
+    },
   },
 })

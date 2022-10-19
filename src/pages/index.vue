@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormInst } from 'naive-ui'
-import { useMessage } from 'naive-ui'
 import axios from '~/api'
 let hitokoto = $ref('永远不要高估一个后端程序员的审美  -- logs404')
 
@@ -9,12 +8,10 @@ const message = useMessage()
 const router = useRouter()
 
 onBeforeMount(() => {
-  console.log(2333)
   axios.get('https://v1.hitokoto.cn/?c=c&c=a&max_length=15').then((res) => {
     // console.log(res);
     hitokoto = `${res.data.hitokoto}  -- ${res.data.from}`
   })
-  axios.get('/api/user')
 })
 
 const formValue = $ref({
@@ -38,19 +35,6 @@ const rules = {
     },
   },
 }
-function handleValidateClick() {
-  formRef.value?.validate((errors) => {
-    if (!errors) {
-      message.success('Valid')
-      localStorage.setItem('Ltoken', 'asdasdasd')
-      router.push('/home')
-    }
-    else {
-      console.log(errors)
-      message.error('Invalid')
-    }
-  })
-}
 
 function handleLogin() {
   formRef.value?.validate((errors) => {
@@ -60,11 +44,13 @@ function handleLogin() {
         password: formValue.user.password,
       }).then((res) => {
         const { data } = res
-        if (data.code === 200)
+        if (data.code === 200) {
           message.success(data.msg)
+          localStorage.setItem('Ltoken', data.data.token)
+          router.push('/home')
+        }
 
-        else
-          message.error(data.msg)
+        else { message.error(data.msg) }
 
         // console.log(res.data);
       })
@@ -107,7 +93,7 @@ function handleLogin() {
       </div>
 
       <div flex justify-between px-12>
-        <n-button type="tertiary" @click="handleValidateClick">
+        <n-button type="primary" @click="handleLogin">
           Go
         </n-button>
         <n-button strong secondary type="tertiary">
