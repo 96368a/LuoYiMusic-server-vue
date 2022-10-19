@@ -1,25 +1,33 @@
 <script setup lang="ts">
 // const showModal = $ref(false)
 import type { FormInst, FormItemRule } from 'naive-ui'
-import { addUser } from '~/api'
+import { addUser, changPwUser, updateUser } from '~/api'
 import type { UserInfo } from '~/types'
 
-const props = defineProps({
-  show: Boolean,
-  mode: String,
-  user: {},
-})
-const emit = defineEmits(['update:show'])
-const userValue = toReactive(props.user as UserInfo)
-const { user } = toRefs(props)
+const { mode, user, show } = defineProps<{
+  show: boolean
+  mode: string
+  user: UserInfo
+}>()
+const emit = defineEmits(['update:show', 'refresh'])
 const formRef = ref<FormInst | null>(null)
-const isEdit = computed(() => props.mode === 'edit')
-// const userValue = reactive({
-//   id: 0,
-//   username: '',
-//   nickname: '',
-//   password: '',
-// })
+const isEdit = computed(() => mode === 'edit')
+const modelTitle = computed(() => {
+  if (mode === 'add')
+    return '添加用户'
+  if (mode === 'edit')
+    return '编辑用户'
+  if (mode === 'changpw')
+    return '更改密码'
+  else
+    return '？？？'
+})
+let userValue = $ref({} as UserInfo)
+watchEffect(() => {
+  // 会在 props 变化时重新赋值
+  userValue = { ...user }
+})
+
 const message = useMessage()
 const rules = {
   nickname: {
@@ -48,19 +56,17 @@ const handelClose = () => {
   emit('update:show', false)
 }
 const handelClick = () => {
-  if (isEdit.value) {
+  if (mode === 'edit') {
     // 编辑用户
-    console.log(user)
-  }
-  else {
-    // 添加用户
+    console.log(userValue)
     formRef.value?.validate((errors) => {
       if (!errors) {
         console.log(userValue)
-        addUser(userValue).then((res) => {
+        updateUser(userValue).then((res) => {
           console.log(res)
           if (res.data.code === 200) {
-            message.success('添加成功')
+            message.success('更新成功')
+            emit('refresh')
             handelClose()
           }
           else {
@@ -74,31 +80,71 @@ const handelClick = () => {
       }
     })
   }
+  else if (mode === 'add') {
+    // 添加用户
+    formRef.value?.validate((errors) => {
+      if (!errors) {
+        console.log(userValue)
+        addUser(userValue).then((res) => {
+          console.log(res)
+          if (res.data.code === 200) {
+            message.success('添加成功')
+            emit('refresh')
+            handelClose()
+          }
+          else {
+            message.error(res.data.msg)
+          }
+        })
+      }
+      else {
+        console.log(errors)
+        message.error('不好')
+      }
+    })
+  }
+  else if (mode === 'changpw') {
+    changPwUser(userValue).then((res) => {
+      if (res.data.code === 200) {
+        message.success('更改成功')
+        userValue.password = ''
+        handelClose()
+      }
+      else {
+        message.error(res.data.msg)
+      }
+    })
+  }
 }
 const handelReset = () => {
+  if (!isEdit)
+    userValue.username = ''
   userValue.nickname = ''
-  userValue.username = ''
   userValue.password = ''
+  userValue.signature = ''
 }
 </script>
 
 <template>
   <n-modal
-    :show="props.show" class="custom-card" preset="card" :title="isEdit ? '编辑用户' : '添加用户'" :style="{ width: '600px' }" size="huge"
-    :bordered="false" @close="handelClose"
+    :show="show" class="custom-card" preset="card" :title="modelTitle"
+    :style="{ width: '600px' }" size="huge" :bordered="false" @close="handelClose"
   >
-    <n-form ref="formRef" :label-width="80" :model="user" label-placement="left" :rules="rules">
-      <n-form-item v-if="isEdit" label="ID" path="id">
-        <n-input-number v-model:value="user.id" placeholder="输入姓名" disabled :show-button="false" />
-      </n-form-item>
-      <n-form-item label="昵称" path="nickname">
-        <n-input v-model:value="user.nickname" placeholder="输入昵称" />
+    <n-form ref="formRef" :label-width="80" :model="userValue" label-placement="left" :rules="rules">
+      <n-form-item v-if="mode === 'edit' || mode === 'changpw'" label="ID" path="id">
+        <n-input-number v-model:value="userValue.id" placeholder="ID" disabled :show-button="false" />
       </n-form-item>
       <n-form-item label="用户名" path="username">
-        <n-input v-model:value="user.username" placeholder="输入用户名" />
+        <n-input v-model:value="userValue.username" placeholder="输入用户名" :disabled="mode === 'edit' || mode === 'changpw'" />
       </n-form-item>
-      <n-form-item v-if="!isEdit" label="密码" path="password">
-        <n-input v-model:value="user.password" placeholder="输入密码" />
+      <n-form-item label="昵称" path="nickname">
+        <n-input v-model:value="userValue.nickname" placeholder="输入昵称" :disabled="mode === 'changpw'" />
+      </n-form-item>
+      <n-form-item v-if="mode === 'edit'" label="签名" path="signature">
+        <n-input v-model:value="userValue.signature" placeholder="输入签名" />
+      </n-form-item>
+      <n-form-item v-if="mode === 'add' || mode === 'changpw'" label="密码" path="password">
+        <n-input v-model:value="userValue.password" placeholder="输入密码" />
       </n-form-item>
     </n-form>
     <template #footer>
