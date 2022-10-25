@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AddSong: typeof import('./src/components/song/AddSong.vue')['default']
     Counter: typeof import('./src/components/Counter.vue')['default']
     EditUser: typeof import('./src/components/user/EditUser.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
@@ -29,7 +30,11 @@ declare module '@vue/runtime-core' {
     NMenu: typeof import('naive-ui')['NMenu']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
+    NP: typeof import('naive-ui')['NP']
     NSpace: typeof import('naive-ui')['NSpace']
+    NText: typeof import('naive-ui')['NText']
+    NUpload: typeof import('naive-ui')['NUpload']
+    NUploadDragger: typeof import('naive-ui')['NUploadDragger']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
