@@ -52,12 +52,16 @@ const menuOptions: MenuOption[] = [
         key: 'song-list',
       },
       {
-        label: () => <router-link to="/home/songlist">歌单列表</router-link>,
-        key: 'songlist-list',
+        label: () => <router-link to="/home/album">专辑列表</router-link>,
+        key: 'alnum-list',
       },
       {
-        label: '歌手列表',
+        label: () => <router-link to="/home/artist">歌手列表</router-link>,
         key: 'arist-list',
+      },
+      {
+        label: () => <router-link to="/home/songlist">歌单列表</router-link>,
+        key: 'songlist-list',
       },
     ],
   },

@@ -1,13 +1,52 @@
 <script setup lang="tsx">
-import { getSongs } from '~/api/song'
+import { delSong, getSongs } from '~/api/song'
 import type { SongInfo } from '~/types/song'
 import AddSong from '~/components/song/AddSong.vue'
+const message = useMessage()
+const dialog = useDialog()
+
+const Dropdown = (props: any) => {
+  const options = [
+    {
+      label: '删除',
+      key: 'del',
+    },
+  ]
+  const handleDelSong = (song: SongInfo) => {
+    console.log(song)
+    dialog.warning({
+      title: '警告',
+      content: `你确定删除${song.name}吗？`,
+      positiveText: '确定',
+      negativeText: '取消',
+      onPositiveClick: () => {
+        delSong(song).then((res) => {
+          if (res.data.code === 200) {
+            message.success('删除成功')
+            getSongList()
+          }
+          else { message.error(res.data.msg) }
+        })
+      },
+    })
+  }
+  const handleSelect = (key: string | number, row: SongInfo) => {
+    console.log(key)
+
+    if (key === 'del')
+      handleDelSong(row)
+  }
+  return (<n-dropdown trigger="hover"
+    options={options} onSelect={(key: string) => handleSelect(key, props.row)}
+    placement="bottom-start">
+    <n-button>操作</n-button></n-dropdown>)
+}
 
 let isloading = $ref(false)
 const searchFormValue = reactive({
   name: '',
 })
-let showModal = $ref(false)
+const showModal = $ref(false)
 const columns = [
   {
     type: 'selection',
@@ -28,6 +67,13 @@ const columns = [
   {
     title: '歌手',
     key: 'artists[0].name',
+  },
+  {
+    title: 'Action',
+    key: 'action',
+    render(row: any) {
+      return <Dropdown row={row}></Dropdown>
+    },
   },
 ]
 const pagination = reactive({
@@ -53,7 +99,7 @@ const getSongList = () => {
   isloading = true
   getSongs(searchFormValue.name, pagination.page, pagination.pageSize).then((res) => {
     // console.log(res.data)
-    data = res.data.data.users
+    data = res.data.data.data
     pagination.itemCount = res.data.data.total
   })
   isloading = false
@@ -100,9 +146,8 @@ onMounted(() => {
     </n-layout>
     <n-layout>
       <n-data-table
-        :columns="columns" :data="data" :pagination="pagination"
-        :remote="true" :row-key="rowKey" :bordered="false" :loading="isloading"
-        @update:page="handlePageChange"
+        :columns="columns" :data="data" :pagination="pagination" :remote="true" :row-key="rowKey"
+        :bordered="false" :loading="isloading" @update:page="handlePageChange"
         @update:page-size="handlePageSizeChange"
       />
     </n-layout>

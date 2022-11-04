@@ -1,13 +1,13 @@
 export interface SongInfo {
   id: number
   name: string
-  album: Album
+  album: AlbumInfo
   alias: null
-  artists: Artist[]
+  artists: ArtistInfo[]
   Hash: string
 }
 
-export interface Album {
+export interface AlbumInfo {
   artistId: number
   description: string
   id: number
@@ -16,7 +16,7 @@ export interface Album {
   picUrl: string
 }
 
-export interface Artist {
+export interface ArtistInfo {
   alias: null
   description: string
   id: number
