@@ -24,3 +24,19 @@ export interface ArtistInfo {
   picId: number
   picUrl: string
 }
+
+export interface SongListInfo {
+  commentCount: number
+  coverImgId: number
+  coverImgUrl: string
+  createTime: number
+  description: string
+  id: number
+  name: string
+  playCount: number
+  status: number
+  subscribedCount: number
+  tags: string[]
+  updateTime: number
+  userId: number
+}

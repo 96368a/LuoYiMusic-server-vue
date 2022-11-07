@@ -1,5 +1,5 @@
 import axios from '.'
-import type { AlbumInfo, ArtistInfo, SongInfo } from '~/types/song'
+import type { AlbumInfo, ArtistInfo, SongInfo, SongListInfo } from '~/types/song'
 
 export const getSongs = async (name: string, page: number, pageSize: number) => {
   return axios.get('/song/search', { params: { name, page, pageSize } })
@@ -22,4 +22,12 @@ export const getArtists = async (name: string, page: number, pageSize: number) =
 
 export const delArtist = async (artist: ArtistInfo) => {
   return axios.post('/api/artist/del', { id: artist.id })
+}
+
+export const getSongLists = async (name: string, page: number, pageSize: number) => {
+  return axios.get('/api/playlist/search', { params: { name, page, pageSize } })
+}
+
+export const delSongList = async (playlist: SongListInfo) => {
+  return axios.post('/api/playlist/del', { id: playlist.id })
 }
