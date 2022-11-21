@@ -12,9 +12,13 @@ import { viteMockServe } from 'vite-plugin-mock'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
+  define: {
+    'global.Uint8Array': 'Uint8Array',
+  },
   resolve: {
     alias: {
       '~/': `${path.resolve(__dirname, 'src')}/`,
+      'node:buffer': 'buffer',
     },
   },
   plugins: [
