@@ -48,16 +48,24 @@ const menuOptions: MenuOption[] = [
     key: 'dance-dance-dance',
     children: [
       {
+        label: () => <router-link to="/home/uploadsong">上传歌曲</router-link>,
+        key: 'upload-song',
+      },
+      {
         label: () => <router-link to="/home/song">歌曲列表</router-link>,
         key: 'song-list',
       },
       {
-        label: () => <router-link to="/home/songlist">歌单列表</router-link>,
-        key: 'songlist-list',
+        label: () => <router-link to="/home/album">专辑列表</router-link>,
+        key: 'alnum-list',
       },
       {
-        label: '歌手列表',
+        label: () => <router-link to="/home/artist">歌手列表</router-link>,
         key: 'arist-list',
+      },
+      {
+        label: () => <router-link to="/home/songlist">歌单列表</router-link>,
+        key: 'songlist-list',
       },
     ],
   },

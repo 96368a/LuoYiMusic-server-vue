@@ -1,12 +1,11 @@
 <script setup lang="tsx">
-import { delSongList, getSongLists } from '~/api/song'
-import type { SongListInfo } from '~/types/song'
-
+import { delAlbum, getAlbums } from '~/api/song'
+import type { AlbumInfo } from '~/types/song'
 const message = useMessage()
 const dialog = useDialog()
 // 表格数据
 let isloading = $ref(false)
-let tableData = $ref([{ id: 1 } as SongListInfo])
+let tableData = $ref([{ id: 1 } as AlbumInfo])
 // 搜索数据
 const searchFormValue = reactive({
   name: '',
@@ -23,9 +22,9 @@ const pagination = reactive({
   },
 })
 // 获取数据方法
-const getSongList = () => {
+const getAlbumList = () => {
   isloading = true
-  getSongLists(searchFormValue.name, pagination.page, pagination.pageSize).then(
+  getAlbums(searchFormValue.name, pagination.page, pagination.pageSize).then(
     (res) => {
       // console.log(res.data)
       tableData = res.data.data.data
@@ -53,13 +52,13 @@ const SearchTool = () => {
                     <n-input
                         v-model:value={searchFormValue.name}
                         placeholder="输入歌曲名或歌手名"
-                        onKeyUp:enter={getSongList}
+                        onKeyUp={getAlbumList}
                     />
                 </n-form-item>
 
                 <n-form-item>
                     <n-space>
-                        <n-button type="primary" onClick={getSongList}>
+                        <n-button type="primary" onClick={getAlbumList}>
                             搜索
                         </n-button>
                         <n-button type="warning" attr-type="reset" onClick={handleReset}>
@@ -79,7 +78,7 @@ const Dropdown = (props: any) => {
       key: 'del',
     },
   ]
-  const handleDelSong = (song: SongListInfo) => {
+  const handleDelSong = (song: AlbumInfo) => {
     console.log(song)
     dialog.warning({
       title: '警告',
@@ -87,10 +86,10 @@ const Dropdown = (props: any) => {
       positiveText: '确定',
       negativeText: '取消',
       onPositiveClick: () => {
-        delSongList(song).then((res) => {
+        delAlbum(song).then((res) => {
           if (res.data.code === 200) {
             message.success('删除成功')
-            getSongList()
+            getAlbumList()
           }
           else {
             message.error(res.data.msg)
@@ -99,7 +98,7 @@ const Dropdown = (props: any) => {
       },
     })
   }
-  const handleSelect = (key: string | number, row: SongListInfo) => {
+  const handleSelect = (key: string | number, row: AlbumInfo) => {
     if (key === 'del')
       handleDelSong(row)
   }
@@ -125,20 +124,12 @@ const TableComponent = () => {
       key: 'id',
     },
     {
-      title: '歌单名',
+      title: '专辑名',
       key: 'name',
     },
     {
-      title: '描述',
-      key: 'description',
-    },
-    {
-      title: '创建用户',
-      key: 'userId',
-    },
-    {
-      title: '状态',
-      key: 'status',
+      title: '歌手名',
+      key: 'artist.name',
     },
     {
       title: 'Action',
@@ -150,13 +141,13 @@ const TableComponent = () => {
   ]
   const handlePageChange = (currentPage: number) => {
     pagination.page = currentPage
-    getSongList()
+    getAlbumList()
   }
   const handlePageSizeChange = (pageSize: number) => {
     pagination.pageSize = pageSize
-    getSongList()
+    getAlbumList()
   }
-  const rowKey = (row: SongListInfo) => row.id
+  const rowKey = (row: AlbumInfo) => row.id
   return (
         <n-layout>
             <n-data-table
@@ -174,7 +165,7 @@ const TableComponent = () => {
   )
 }
 onMounted(() => {
-  getSongList()
+  getAlbumList()
 })
 </script>
 

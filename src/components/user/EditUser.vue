@@ -11,7 +11,6 @@ const { mode, user, show } = defineProps<{
 }>()
 const emit = defineEmits(['update:show', 'refresh'])
 const formRef = ref<FormInst | null>(null)
-const isEdit = computed(() => mode === 'edit')
 const modelTitle = computed(() => {
   if (mode === 'add')
     return '添加用户'
@@ -117,10 +116,12 @@ const handelClick = () => {
   }
 }
 const handelReset = () => {
-  if (!isEdit)
+  if (mode === 'add')
     userValue.username = ''
-  userValue.nickname = ''
-  userValue.password = ''
+  if (mode === 'edit')
+    userValue.nickname = ''
+  if (mode === 'changpw')
+    userValue.password = ''
   userValue.signature = ''
 }
 </script>
